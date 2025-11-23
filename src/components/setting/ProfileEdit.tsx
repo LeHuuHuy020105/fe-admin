@@ -287,6 +287,33 @@ export default function ProfileEdit({ isOpen, onClose, onSave, user }: ProfileEd
     }
   };
 
+  // Reset all states when modal closes
+  const handleClose = () => {
+    setActiveTab("info");
+    setLoading(false);
+    setUploadedAvatar(user?.avatar || "");
+    setAvatarFile(null);
+    setFullName(user?.fullName || "");
+    setGender(user?.gender || "");
+    setDateOfBirth(user?.dateOfBirth || "");
+    setPhone(user?.phone || "");
+    setEmailOtpStep("new");
+    setNewEmail("");
+    setEmailOtp("");
+    setEmailOtpSending(false);
+    setEmailOtpVerifying(false);
+    setEmailResetToken("");
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordChanging(false);
+    setPasswordError("");
+    setEmailVerifyStep("idle");
+    setEmailVerifyOtp("");
+    setEmailVerifyLoading(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -296,7 +323,7 @@ export default function ProfileEdit({ isOpen, onClose, onSave, user }: ProfileEd
         <div className="sticky top-0 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">✏️ Chỉnh sửa thông tin</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
           >
             ✕
@@ -438,7 +465,7 @@ export default function ProfileEdit({ isOpen, onClose, onSave, user }: ProfileEd
               {/* Save Button */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600 font-medium transition-all"
                 >
                   Hủy
@@ -550,7 +577,7 @@ export default function ProfileEdit({ isOpen, onClose, onSave, user }: ProfileEd
 
                       <div className="flex items-center justify-end gap-3">
                         <button
-                          onClick={onClose}
+                          onClick={handleClose}
                           className="px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600 font-medium transition-all"
                         >
                           Hủy
@@ -694,7 +721,7 @@ export default function ProfileEdit({ isOpen, onClose, onSave, user }: ProfileEd
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600 font-medium transition-all"
                 >
                   Hủy

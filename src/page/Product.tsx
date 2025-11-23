@@ -49,13 +49,12 @@ export default function Product() {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearch(search); // Cập nhật giá trị debounce
-    }, 5000); // 500ms sau khi user ngừng gõ
+      setDebouncedSearch(search);
+    }, 500); // 500ms sau khi user ngừng gõ
 
-    return () => clearTimeout(handler); // clear timeout cũ nếu user gõ tiếp
+    return () => clearTimeout(handler);
   }, [search]);
 
-  // Khi debouncedSearch thay đổi mới gọi fetchProducts
   useEffect(() => {
     fetchProducts(debouncedSearch);
   }, [debouncedSearch, sort, page, size]);
@@ -79,15 +78,12 @@ export default function Product() {
     if (result.success) {
       setProducts(result.data.data);
       setTotalPages(result.data.totalPages);
+      setLoading(false);
     } else {
       toast.error("Lấy sản phẩm thất bại: " + result.error);
+      setLoading(false); // ensure loading is turned off on error
     }
-    setLoading(false);
   };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [search, sort, page, size]);
 
   const handleDeleteProduct = async (productId: number) => {
     const confirm = window.confirm(
@@ -100,6 +96,8 @@ export default function Product() {
     else {
       toast.success("Xóa sản phẩm thành công!");
       fetchProducts();
+      setSearch(""); // Reset form after delete
+      setDebouncedSearch(""); // Reset debounce search
     }
   };
 
@@ -126,6 +124,8 @@ export default function Product() {
     else {
       toast.success("Khôi phục sản phẩm thành công!");
       fetchProducts();
+      setSearch(""); // Reset form after restore
+      setDebouncedSearch(""); // Reset debounce search
     }
   };
 
@@ -153,8 +153,14 @@ export default function Product() {
         onClose={() => {
           setIsDialogOpen(false);
           setEditingProduct(null);
+          setSearch(""); // Reset form after add/edit
+          setDebouncedSearch(""); // Reset debounce search
         }}
-        fetchData={fetchProducts}
+        fetchData={() => {
+          fetchProducts();
+          setSearch(""); // Reset form after add/edit
+          setDebouncedSearch(""); // Reset debounce search
+        }}
         productData={editingProduct}
       />
 
@@ -171,9 +177,8 @@ export default function Product() {
             className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
             value={search}
             onChange={(e) => {
-              const value = e.target.value;
-              setSearch(value);
-              fetchProducts();
+              setSearch(e.target.value);
+              // Do NOT call fetchProducts() here
             }}
           />
         </div>

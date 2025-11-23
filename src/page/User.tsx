@@ -27,9 +27,18 @@ export default function UserPage() {
   const [hasUserRole, setHasUserRole] = useState<boolean | null>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [debouncedKeyword, setDebouncedKeyword] = useState(keyword);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedKeyword(keyword);
+    }, 500); // 500ms sau khi user ngừng gõ
+
+    return () => clearTimeout(handler);
+  }, [keyword]);
 
   const fetchUsers = async () => {
-    const res: any = await getAllUser({ keyword, page, size, hasUserRole });
+    const res: any = await getAllUser({ keyword: debouncedKeyword, page, size, hasUserRole });
     if (res.success) {
       setUsers(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -40,7 +49,7 @@ export default function UserPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [page, keyword, hasUserRole]);
+  }, [page, debouncedKeyword, hasUserRole]);
 
   const toggleLock = async (user: User) => {
     const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -85,7 +94,11 @@ export default function UserPage() {
       <UserModal
         user={selectedUser}
         isOpen={isModalOpen}
-        fetchUser={fetchUsers}
+        fetchUser={() => {
+          fetchUsers();
+          setKeyword(""); // Reset form after add/edit
+          setDebouncedKeyword(""); // Reset debounce search
+        }}
         onClose={() => setIsModalOpen(false)}
       />
 
@@ -157,9 +170,9 @@ export default function UserPage() {
                   className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                 >
                   {u.status === "ACTIVE" ? (
-                    <Lock className="w-5 h-5" />
-                  ) : (
                     <Unlock className="w-5 h-5" />
+                  ) : (
+                    <Lock className="w-5 h-5" />
                   )}
                 </button>
 

@@ -90,7 +90,7 @@ export default function Setting() {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={user.avatar ? user.avatar : "/assest/default-avatar.webp"}
+        src={user.avatar ? user.avatar : "/asset/default-avatar.webp"}
         alt={user.fullName || user.userName}
         className="w-24 h-24 rounded-full object-cover"
       />
@@ -98,8 +98,21 @@ export default function Setting() {
   };
 
   const handleAddAddress = () => {
+    // Nếu user có thông tin, prefill customerName và phoneNumber
     setEditingAddressId(undefined);
-    setEditingAddress(undefined);
+    setEditingAddress(user
+      ? {
+          customerName: user.fullName || "",
+          phoneNumber: user.phone || "",
+          provinceId: null,
+          districtId: null,
+          wardCode: null,
+          streetAddress: "",
+          addressType: "HOME",
+          defaultAddress: false,
+        }
+      : undefined
+    );
     setShowAddressModal(true);
   };
 
@@ -134,6 +147,17 @@ export default function Setting() {
       const wards = wardsRes.data || [];
       const ward = wards.find(w => w.WardCode === formData.wardCode);
 
+      // Nối chuỗi địa chỉ chi tiết
+      const fullAddress =
+        [
+          formData.streetAddress,
+          ward?.WardName,
+          district?.DistrictName,
+          province?.ProvinceName,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
       const payload = {
         customerName: formData.customerName,
         customerPhone: formData.phoneNumber,
@@ -143,7 +167,7 @@ export default function Setting() {
         provinceId: formData.provinceId,
         districtId: formData.districtId,
         wardId: formData.wardCode,
-        streetAddress: formData.streetAddress,
+        streetAddress: fullAddress,
         addressType: formData.addressType,
       };
 

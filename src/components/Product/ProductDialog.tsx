@@ -160,6 +160,9 @@ export default function ProductDialog({
   const [height, setHeight] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
 
+  console.log("product DATA : ", productData);
+  console.log("attributes DATA : ", productData?.attributes);
+  console.log("attribute HUY DATA : ", attributes);
   const variantFields = [
     "price",
     "length",
@@ -240,7 +243,7 @@ export default function ProductDialog({
       setSalePrice(productData.salePrice ?? "");
       setCoverImage(productData.coverImage || "");
       setVideo(productData.video || "");
-      setAttributes(productData.attributes || []);
+      setAttributes(JSON.parse(JSON.stringify(productData.attributes || [])));
       setProductVariants(productData.productVariant || []);
       setImageProduct(productData.imageProduct || []);
     } else {
@@ -355,6 +358,20 @@ export default function ProductDialog({
       throw new Error("Giá gốc phải >= giá sale");
     if (!product.coverImage) throw new Error("Vui lòng upload ảnh bìa");
 
+    if (product.productVariant.length === 0) {
+      if (length === "" || length <= 0) {
+        throw new Error("Vui lòng nhập chiều dài > 0");
+      }
+      if (width === "" || width <= 0) {
+        throw new Error("Vui lòng nhập chiều rộng > 0");
+      }
+      if (height === "" || height <= 0) {
+        throw new Error("Vui lòng nhập chiều cao > 0");
+      }
+      if (weight === "" || weight <= 0) {
+        throw new Error("Vui lòng nhập trọng lượng > 0");
+      }
+    }
     // Kiểm tra biến thể
     for (let v of product.productVariant) {
       if (v.price === undefined || v.price <= 0)
@@ -400,6 +417,7 @@ export default function ProductDialog({
     try {
       validateProduct(productObj);
     } catch (err) {
+      setLoading(false);
       return toast.error((err as Error).message); // toast sẽ hiện ngay
     }
 
@@ -530,6 +548,21 @@ export default function ProductDialog({
 
   const handleUpdate = async () => {
     if (!productData) return;
+    const productObj = {
+      name,
+      description,
+      categoryId,
+      listPrice: Number(listPrice) || 0,
+      salePrice: Number(salePrice) || 0,
+      coverImage,
+      video,
+      weight: weight ? Number(weight) : null,
+      length: length ? Number(length) : null,
+      width: width ? Number(width) : null,
+      height: height ? Number(height) : null,
+      attributes,
+      productVariant: productVariants,
+    };
 
     const updatePayload: any = { id: productData.id };
     const uploadedUrls: string[] = [];
@@ -561,7 +594,9 @@ export default function ProductDialog({
     };
     setLoading(true);
     try {
-      // ==========================
+      validateProduct(productObj);
+      // ==========
+      // ================
       // 1. Xử lý Cover Image
       // ==========================
       if (coverImage !== productData.coverImage) {
@@ -585,7 +620,7 @@ export default function ProductDialog({
           const [url] = await uploadFiles([dataURLtoFile(video, "video.mp4")]);
           updatePayload.video = url;
           uploadedUrls.push(url);
-        } else if (!video) {
+        } else if (!video && productData.video) {
           updatePayload.removeVideo = true;
         } else {
           updatePayload.video = video;
@@ -656,6 +691,8 @@ export default function ProductDialog({
         oldAttrs: Attribute[],
         newAttrs: Attribute[]
       ) => {
+        console.log("oldAttrs:", oldAttrs);
+        console.log("newAttrs:", newAttrs);
         const changed: AttributeValueUpdateRequest[] = [];
         oldAttrs.forEach((oldAttr) => {
           const newAttr = newAttrs.find((a) => a.id === oldAttr.id);
@@ -667,8 +704,13 @@ export default function ProductDialog({
             );
             if (!newVal) return;
             const valChanged = oldVal.value !== newVal.value;
-            const imgChanged =
-              (oldVal.image || null) !== (newVal.image || null);
+            console.log("Comparing attribute values:", oldVal, newVal);
+            console.log("Comparing attribute values image :", oldVal.image, newVal.image);
+            console.log("Value changed:", valChanged);
+            console.log("Chagnged image check:" , oldVal.image === newVal.image);
+            const imgChanged = oldVal.image !== newVal.image;
+
+              console.log("Image changed:", imgChanged);
             if (valChanged || imgChanged) {
               changed.push({
                 id: oldVal.id,
@@ -804,7 +846,7 @@ export default function ProductDialog({
     const val = attr.attributeValue.find((v) => v.value === va.value);
     return val?.image;
   };
-
+  console.log("attributes for getVariantImage: ", attributes);
   const resetForm = () => {
     setName("");
     setDescription("");
@@ -1169,6 +1211,7 @@ export default function ProductDialog({
                             onChange={(e) => {
                               const copy = [...attributes];
                               copy[ai].name = e.target.value;
+                              console.log("Updated attributes:", copy);
                               setAttributes(copy);
                             }}
                             className="flex-1 p-2 border rounded-xl"
@@ -1215,7 +1258,7 @@ export default function ProductDialog({
                                 <label className="cursor-pointer px-2 py-1 border rounded bg-slate-100 hover:bg-slate-200 text-sm">
                                   ⬆️
                                   <input
-                                    disabled={isReadOnly}
+                                    disabled={isReadOnly ? isReadOnly :(productData? true : false)}
                                     type="file"
                                     accept="image/*"
                                     className="hidden"

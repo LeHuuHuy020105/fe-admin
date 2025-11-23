@@ -90,6 +90,64 @@ export const UserModal: React.FC<UserModalProps> = ({
   const handleSave = async () => {
     let uploadedAvatarUrls: string[] = [];
 
+    // Validate required fields and phone/email format
+    if (!formData.fullName?.trim()) {
+      toast.error("Vui lòng nhập tên đầy đủ");
+      return;
+    }
+    if(!formData.gender){
+      toast.error("Vui lòng chọn giới tính");
+      return;
+    }
+    if(!formData.dateOfBirth){
+      toast.error("Vui lòng chọn ngày sinh");
+      return;
+    }
+    // Check age >= 14
+    if (formData.dateOfBirth) {
+      const dob = new Date(formData.dateOfBirth);
+      const now = new Date();
+      const age = now.getFullYear() - dob.getFullYear() - (now < new Date(dob.setFullYear(now.getFullYear())) ? 1 : 0);
+      if (age < 14) {
+        toast.error("Người dùng phải đủ 14 tuổi trở lên");
+        return;
+      }
+    }
+    if (!formData.userName?.trim()) {
+      toast.error("Vui lòng nhập username");
+      return;
+    }
+    if (!formData.email?.trim()) {
+      toast.error("Vui lòng nhập email");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      toast.error("Email không hợp lệ");
+      return;
+    }
+    if (!formData.phone?.trim()) {
+      toast.error("Vui lòng nhập số điện thoại");
+      return;
+    }
+    const phoneRegex = /^(0[0-9]{9}|\+84[0-9]{9})$/;
+    if (!phoneRegex.test(formData.phone.trim())) {
+      toast.error("Số điện thoại không hợp lệ");
+      return;
+    }
+    if (!formData.password?.trim()) {
+      toast.error("Vui lòng nhập mật khẩu");
+      return;
+    }
+    if (formData.password.length < 8) {
+      toast.error("Mật khẩu phải có ít nhất 8 ký tự");
+      return;
+    }
+    if (!selectedRoles || selectedRoles.length === 0) {
+      toast.error("Vui lòng chọn ít nhất một vai trò");
+      return;
+    }
+    // ...existing code...
     try {
       const payload = {
         fullName: formData.fullName,
@@ -99,7 +157,7 @@ export const UserModal: React.FC<UserModalProps> = ({
         phone: formData.phone,
         password: formData.password,
         dateOfBirth: formData.dateOfBirth,
-        roleId: selectedRoles.map((r) => r.id), // ✔ trả về [1,2,3]
+        roleId: selectedRoles.map((r) => r.id),
       };
 
       // 2) Gọi API tạo user
@@ -118,6 +176,7 @@ export const UserModal: React.FC<UserModalProps> = ({
       }
 
       if (!res.success) {
+        alert("Tạo user thất bại!");
         const error = res.error;
 
         // Nếu backend gửi array details → toast từng lỗi

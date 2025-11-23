@@ -9,7 +9,7 @@ export interface AddressFormData {
   districtId: number | null;
   wardCode: string | null;
   streetAddress: string;
-  addressType: "HOME" | "WORK" | "OTHER";
+  addressType: "HOME" | "WORK" ;
   defaultAddress: boolean;
 }
 
@@ -34,6 +34,19 @@ export default function Address({ isOpen, onClose, onSave, initialData, isLoadin
       defaultAddress: false,
     }
   );
+
+  // Prefill form when initialData changes (e.g. when opening modal)
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev) => ({
+        ...prev,
+        ...initialData,
+        provinceId: initialData.provinceId ?? initialData.provinceId ?? null,
+        districtId: initialData.districtId ?? initialData.districtId ?? null,
+        wardCode: initialData.wardCode ?? initialData.wardCode ?? null,
+      }));
+    }
+  }, [initialData, isOpen]);
 
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -106,7 +119,15 @@ export default function Address({ isOpen, onClose, onSave, initialData, isLoadin
     const newErrors: Record<string, string> = {};
 
     if (!formData.customerName.trim()) newErrors.customerName = "Tên người nhận là bắt buộc";
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Số điện thoại là bắt buộc";
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Số điện thoại là bắt buộc";
+    } else {
+      // Kiểm tra định dạng số điện thoại Việt Nam
+      const phoneRegex = /^(0[0-9]{9}|\+84[0-9]{9})$/;
+      if (!phoneRegex.test(formData.phoneNumber.trim())) {
+        newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+      }
+    }
     if (!formData.provinceId) newErrors.provinceId = "Tỉnh/Thành phố là bắt buộc";
     if (!formData.districtId) newErrors.districtId = "Quận/Huyện là bắt buộc";
     if (!formData.wardCode) newErrors.wardCode = "Phường/Xã là bắt buộc";
@@ -189,26 +210,15 @@ export default function Address({ isOpen, onClose, onSave, initialData, isLoadin
               </label>
               <select
                 value={formData.addressType}
-                onChange={e => setFormData({ ...formData, addressType: e.target.value as "HOME" | "WORK" | "OTHER" })}
+                onChange={e => setFormData({ ...formData, addressType: e.target.value as "HOME" | "WORK" })}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
               >
                 <option value="HOME">🏠 Nhà riêng</option>
                 <option value="WORK">💼 Cơ quan</option>
-                <option value="OTHER">📌 Khác</option>
               </select>
             </div>
 
-            <div className="flex items-end">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.defaultAddress}
-                  onChange={e => setFormData({ ...formData, defaultAddress: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-slate-600"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">⭐ Đặt làm địa chỉ mặc định</span>
-              </label>
-            </div>
+    
           </div>
 
           {/* Province, District, Ward */}

@@ -4,8 +4,14 @@ import { getAllUser, updateUserStatus } from "../api/user/user";
 import toast from "react-hot-toast";
 import { CustomerModal } from "../components/Customer/CustomerModal";
 
-interface Role { id: number; name: string; }
-interface UserRank { id: number; name: string; }
+interface Role {
+  id: number;
+  name: string;
+}
+interface UserRank {
+  id: number;
+  name: string;
+}
 interface User {
   id: number;
   fullName: string;
@@ -51,21 +57,21 @@ export default function Customer() {
   };
 
   const toggleLock = async (user: User) => {
-      const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-      try {
-        const res = await updateUserStatus(user.id, newStatus);
-        if (res.success) {
-          toast.success(
-            `User ${newStatus === "ACTIVE" ? "mở khoá" : "khoá"} thành công!`
-          );
-          fetchUsers();
-        } else {
-          toast.error("Có lỗi xảy ra !");
-        }
-      } catch (error: any) {
-        toast.error(error.response?.data || error.message);
+    const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    try {
+      const res = await updateUserStatus(user.id, newStatus);
+      if (res.success) {
+        toast.success(
+          `User ${newStatus === "ACTIVE" ? "mở khoá" : "khoá"} thành công!`
+        );
+        fetchUsers();
+      } else {
+        toast.error("Có lỗi xảy ra !");
       }
-    };
+    } catch (error: any) {
+      toast.error(error.response?.data || error.message);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -137,11 +143,15 @@ export default function Customer() {
                   onClick={() => toggleLock(u)}
                   className={`p-2 rounded-lg transition ${
                     u.status === "ACTIVE"
-                      ? "bg-red-500 hover:bg-red-600 text-white"
-                      : "bg-green-500 hover:bg-green-600 text-white"
+                      ? "bg-green-500 hover:bg-green-600 text-white"
+                      : "bg-red-500 hover:bg-red-600 text-white"
                   }`}
                 >
-                  {u.status === "ACTIVE" ? <Lock size={16} /> : <Unlock size={16} />}
+                  {u.status === "ACTIVE" ? (
+                    <Unlock size={16} />
+                  ) : (
+                    <Lock size={16} />
+                  )}
                 </button>
               </td>
             </tr>
