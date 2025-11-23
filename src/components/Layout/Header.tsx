@@ -1,21 +1,29 @@
-import { Bell, ChevronDown, Filter, Menu, Plus, Search, Settings } from "lucide-react";
+import { Bell, ChevronDown, Filter, Menu, Plus, Search, Settings, LogOut } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getCurrentUser } from "../../api/auth/auth";
+import { getCurrentUser, logoutApi } from "../../api/auth/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({sideBarCollapsed, onToggleSideBar}: {sideBarCollapsed: boolean; onToggleSideBar: () => void}) {
   const [user, setUser] = useState<any | null>(null);
+ const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchUser = async () => {
       const res = await getCurrentUser();
+      console.log("res ", res.data)
       if (res.success) {
-        setUser(res.data.data);
+        setUser(res.data);
       } else {
         console.error("Lỗi khi lấy user:", res.error);
       }
     };
     fetchUser();
   }, []);
+
+  const handleLogout = async () => {
+    await logoutApi();
+    navigate("/login");
+  };
 
   return (
     <div
@@ -50,11 +58,6 @@ export default function Header({sideBarCollapsed, onToggleSideBar}: {sideBarColl
             </span>
           </button>
 
-          <button className="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100
-          dark:hover:bg-slate-800 transition-colors">
-            <Settings className="w-5 h-5"/>
-          </button>
-
           <div className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700">
             <img
               src={user?.avatar || "/assest/default-avatar.webp"}
@@ -67,6 +70,14 @@ export default function Header({sideBarCollapsed, onToggleSideBar}: {sideBarColl
             </div>
 
             <ChevronDown className="w-4 h-4 text-slate-400"/>
+            <button
+              onClick={handleLogout}
+              className="ml-2 p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900 transition-colors flex items-center gap-1"
+              title="Đăng xuất"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden md:inline text-sm font-medium">Đăng xuất</span>
+            </button>
           </div>
         </div>
       </div>

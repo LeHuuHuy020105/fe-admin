@@ -14,6 +14,8 @@ import Supplier from "./page/Supplier";
 import Order from "./page/Order";
 import RolePermission from "./page/RolePermission";
 import Customer from "./page/Customer";
+import Category from "./page/Category";
+import Setting from "./page/Setting";
 
 export default function App() {
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
@@ -117,6 +119,28 @@ export default function App() {
             <ProtectedRoute isAuthenticated={isAuthenticated}>
               <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
                 <Customer />
+              </DashboardWrapper>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/category"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
+                <Category />
+              </DashboardWrapper>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
+                <Setting />
               </DashboardWrapper>
             </ProtectedRoute>
           }

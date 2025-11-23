@@ -22,22 +22,21 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError & { config?: AxiosRequestConfig }) => {
-
-    // Nếu lỗi 401 và chưa retry
-    if (error.response?.status === 401) {
-    
-
-      const refreshToken = localStorage.getItem("token"); // token cũ
+    // Prevent redirect for login API
+    if (
+      error.response?.status === 401 &&
+      error.config?.url &&
+      !error.config.url.includes("/auth/login")
+    ) {
+      const refreshToken = localStorage.getItem("token");
       if (!refreshToken) {
         localStorage.removeItem("token");
         window.location.href = "/login";
         return Promise.reject(error);
       }
-
       try {
         const response = await axios.post(`${API_BASE_URL}/auth/refresh`, { token: refreshToken });
         const newToken = response.data.data.token;
-
         if (newToken) {
           localStorage.setItem("token", newToken);
         }
@@ -47,7 +46,6 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-
     return Promise.reject(error);
   }
 );

@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
 type SidebarProps = {
   collapsed: boolean;
   onToggle: () => void;
@@ -30,16 +29,6 @@ const menuItems = [
     label: "Dashboard",
   },
   {
-    id: "analytics",
-    icon: BarChart3,
-    label: "Analytics",
-    submenu: [
-      { id: "/analytics/overview", label: "Overview" },
-      { id: "/analytics/reports", label: "Reports" },
-      { id: "/analytics/statistics", label: "Statistics" },
-    ],
-  },
-  {
     id: "users",
     icon: Users,
     label: "Users",
@@ -48,8 +37,8 @@ const menuItems = [
       { id: "/users/roles", label: "Roles & Permissions" },
     ],
   },
-    {
-    id: "customers",
+  {
+    id: "/customers",
     icon: PersonStanding,
     label: "Customers",
   },
@@ -58,7 +47,12 @@ const menuItems = [
     icon: ShoppingBag,
     label: "Products",
   },
-   {
+  {
+    id: "/category",
+    icon: ShoppingBag,
+    label: "Category",
+  },
+  {
     id: "/supplier",
     icon: Briefcase,
     label: "Supplier",
@@ -68,25 +62,15 @@ const menuItems = [
     icon: Package,
     label: "Inventory",
   },
-   {
+  {
     id: "/order",
     icon: Truck,
     label: "Order",
   },
   {
-    id: "/transactions",
-    icon: CreditCard,
-    label: "Transactions",
-  },
-  {
     id: "/messages",
     icon: MessageSquare,
     label: "Messages",
-  },
-  {
-    id: "/reports",
-    icon: FileText,
-    label: "Reports",
   },
   {
     id: "/settings",
@@ -102,15 +86,15 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   // mở rộng menu
   const [expandItems, setExpandItems] = useState(new Set(["analytics"]));
 
-  const toggleExpanded = (id:any) => {
+  const toggleExpanded = (id: any) => {
     const newExpanded = new Set(expandItems);
     newExpanded.has(id) ? newExpanded.delete(id) : newExpanded.add(id);
     setExpandItems(newExpanded);
   };
 
-  const isActive = (id:any, submenu:any) => {
+  const isActive = (id: any, submenu: any) => {
     if (submenu) {
-      return submenu.some((s:any) => pathname.startsWith(s.id));
+      return submenu.some((s: any) => pathname.startsWith(s.id));
     }
     return pathname === id;
   };
