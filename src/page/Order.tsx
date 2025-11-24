@@ -109,8 +109,8 @@ export default function AdminOrderPage() {
             if (oldStatus === "PACKED" && newStatus === "SHIPPED") {
                 try {
                     console.log("Transferring to GHN:", orderId);
-                    await ShippingAPI.TransferGHN(orderId, "CHOTHUHANG");
                     await OrderAPI.updateStatus(orderId, newStatus);
+                    await ShippingAPI.TransferGHN(orderId, "CHOTHUHANG");
                     toast.success("Đã chuyển đơn hàng sang GHN và cập nhật trạng thái");
                 } catch (shippingError) {
                     console.error("Failed to transfer to GHN:", shippingError);

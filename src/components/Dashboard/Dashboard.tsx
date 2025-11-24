@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 
 import { ref, onValue , off } from "firebase/database";
 // Add this import to fix TS7016 error:
-import type { Database } from "firebase/database";
 // @ts-ignore: No type declaration for Firebase.js
 import { db } from '../../firebase/Firebase.js';
 

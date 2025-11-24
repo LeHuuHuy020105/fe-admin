@@ -357,7 +357,9 @@ export default function ProductDialog({
     if (product.listPrice < product.salePrice)
       throw new Error("Giá gốc phải >= giá sale");
     if (!product.coverImage) throw new Error("Vui lòng upload ảnh bìa");
-
+    if(imageProduct.length <1 ){
+      throw new Error("Sản phẩm phải có ít nhất 1 ảnh");
+    }
     if (product.productVariant.length === 0) {
       if (length === "" || length <= 0) {
         throw new Error("Vui lòng nhập chiều dài > 0");
@@ -687,44 +689,52 @@ export default function ProductDialog({
       // ==========================
       // 6. Update attributeValue
       // ==========================
-      const getChangedAttributeValues = (
+      const getChangedAttributeValues = async (
         oldAttrs: Attribute[],
         newAttrs: Attribute[]
       ) => {
-        console.log("oldAttrs:", oldAttrs);
-        console.log("newAttrs:", newAttrs);
         const changed: AttributeValueUpdateRequest[] = [];
-        oldAttrs.forEach((oldAttr) => {
+        for (const oldAttr of oldAttrs) {
           const newAttr = newAttrs.find((a) => a.id === oldAttr.id);
-          if (!newAttr) return;
-          oldAttr.attributeValue.forEach((oldVal) => {
-            if (typeof oldVal.id !== "number") return;
-            const newVal = newAttr.attributeValue.find(
-              (v) => v.id === oldVal.id
-            );
-            if (!newVal) return;
+          if (!newAttr) continue;
+          for (const oldVal of oldAttr.attributeValue) {
+            if (typeof oldVal.id !== "number") continue;
+            const newVal = newAttr.attributeValue.find((v) => v.id === oldVal.id);
+            if (!newVal) continue;
             const valChanged = oldVal.value !== newVal.value;
-            console.log("Comparing attribute values:", oldVal, newVal);
-            console.log("Comparing attribute values image :", oldVal.image, newVal.image);
-            console.log("Value changed:", valChanged);
-            console.log("Chagnged image check:" , oldVal.image === newVal.image);
             const imgChanged = oldVal.image !== newVal.image;
-
-              console.log("Image changed:", imgChanged);
+            let imageUrl = newVal.image;
+            // removeImage: true nếu newVal.image là undefined/null và oldVal.image có giá trị
+            let removeImage =
+              (newVal.image === undefined || newVal.image === null) &&
+              oldVal.image != null;
+            // Nếu ảnh thay đổi và là base64, upload trước khi gửi request
+            if (imgChanged && newVal.image && newVal.image.startsWith("data:")) {
+              try {
+                const fileName = `attr_${newVal.id || Date.now()}.png`;
+                const [url] = await uploadFiles([
+                  dataURLtoFile(newVal.image, fileName),
+                ]);
+                imageUrl = url;
+              } catch (err) {
+                toast.error("Upload ảnh thuộc tính thất bại!");
+                continue;
+              }
+            }
             if (valChanged || imgChanged) {
               changed.push({
                 id: oldVal.id,
                 value: newVal.value,
-                image: newVal.image,
-                isRemoveImage: !newVal.image,
+                image: imageUrl,
+                removeImage,
               });
             }
-          });
-        });
+          }
+        }
         return changed;
       };
 
-      const attrValuePayload = getChangedAttributeValues(
+      const attrValuePayload = await getChangedAttributeValues(
         productData.attributes || [],
         attributes
       );
@@ -1258,7 +1268,7 @@ export default function ProductDialog({
                                 <label className="cursor-pointer px-2 py-1 border rounded bg-slate-100 hover:bg-slate-200 text-sm">
                                   ⬆️
                                   <input
-                                    disabled={isReadOnly ? isReadOnly :(productData? true : false)}
+                                    disabled={isReadOnly }
                                     type="file"
                                     accept="image/*"
                                     className="hidden"

@@ -16,6 +16,7 @@ import RolePermission from "./page/RolePermission";
 import Customer from "./page/Customer";
 import Category from "./page/Category";
 import Setting from "./page/Setting";
+import Voucher from "./page/Voucher";
 
 export default function App() {
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
@@ -130,6 +131,17 @@ export default function App() {
             <ProtectedRoute isAuthenticated={isAuthenticated}>
               <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
                 <Category />
+              </DashboardWrapper>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/vouchers"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
+                <Voucher />
               </DashboardWrapper>
             </ProtectedRoute>
           }

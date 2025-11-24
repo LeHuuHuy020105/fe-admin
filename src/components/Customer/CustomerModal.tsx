@@ -77,21 +77,30 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
 
                 {/* Info fields */}
                 <div className="grid grid-cols-1 gap-3">
-                  <input
-                    type="text"
-                    value={user.fullName || ""}
-                    disabled
-                    placeholder="Full Name"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
-                  <input
-                    type="text"
-                    value={user.userName || ""}
-                    disabled
-                    placeholder="Username"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
+                  <div>
+                    <label htmlFor="" className="mb-2">
+                      FullName
+                    </label>
+                    <input
+                      type="text"
+                      value={user.fullName || ""}
+                      disabled
+                      placeholder="Full Name"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Username</label>
+                    <input
+                      type="text"
+                      value={user.userName || ""}
+                      disabled
+                      placeholder="Username"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
                   <div className="relative">
+                    <label htmlFor="">Email</label>
                     <input
                       type="email"
                       value={user.email || ""}
@@ -100,53 +109,80 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
                       className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
                     />
                     <Mail
-                      className={`absolute right-3 top-3 w-5 h-5 ${
+                      className={`absolute right-3 top-9 w-5 h-5 ${
                         user.verifiedEmail ? "text-green-500" : "text-red-500"
                       }`}
                     />
                   </div>
-                  <input
-                    type="text"
-                    value={user.phone || ""}
-                    disabled
-                    placeholder="Phone"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
-                  <input
-                    type="text"
-                    value={user.gender || ""}
-                    disabled
-                    placeholder="Gender"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
-                  <input
-                    type="text"
-                    value={user.dateOfBirth || ""}
-                    disabled
-                    placeholder="Date of Birth"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
-                  <input
-                    type="text"
-                    value={user.point || 0}
-                    disabled
-                    placeholder="Point"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
-                  <input
-                    type="text"
-                    value={user.userRankResponse?.name || ""}
-                    disabled
-                    placeholder="User Rank"
-                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
-                  />
+                  <div>
+                    <label htmlFor="">Phone</label>
+                    <input
+                      type="text"
+                      value={user.phone || ""}
+                      disabled
+                      placeholder="Phone"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Gender</label>
+                    <input
+                      type="text"
+                      value={user.gender || ""}
+                      disabled
+                      placeholder="Gender"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Date of birth</label>
+                    <input
+                      type="text"
+                      value={user.dateOfBirth || ""}
+                      disabled
+                      placeholder="Date of Birth"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Points</label>
+                    <input
+                      type="text"
+                      value={user.point || 0}
+                      disabled
+                      placeholder="Point"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="">Total spent</label>
+                    <input
+                      type="text"
+                      value={user.totalSpent || 0}
+                      disabled
+                      placeholder="Point"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Rank</label>
+                    <input
+                      type="text"
+                      value={user.userRankResponse?.name || ""}
+                      disabled
+                      placeholder="User Rank"
+                      className="w-full px-3 py-2 rounded-lg border bg-gray-100 dark:bg-slate-600"
+                    />
+                  </div>
 
                   {/* Addresses */}
                   <div>
                     <label className="font-semibold text-slate-700 dark:text-slate-200 mb-2 block">
                       Địa chỉ
                     </label>
-                    {user.addressResponses && user.addressResponses.length > 0 ? (
+                    {user.addressResponses &&
+                    user.addressResponses.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-80 overflow-y-auto">
                         {user.addressResponses.map((addr: any, idx: number) => (
                           <div
@@ -189,7 +225,6 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
                       />
                     )}
                   </div>
-
                 </div>
               </div>
             </Dialog.Panel>
