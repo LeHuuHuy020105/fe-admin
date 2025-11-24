@@ -90,7 +90,7 @@ export default function ImportProductPage() {
       {/* Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <table className="w-full text-left border-collapse">
-          <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+          <thead className="bg-slate-50 dark:bg-slate-400 border-b border-slate-200 dark:border-slate-700">
             <tr>
               <th className="p-4">Mã phiếu</th>
               <th className="p-4">Nhà cung cấp</th>
@@ -101,19 +101,19 @@ export default function ImportProductPage() {
               <th className="p-4 text-right">Hành động</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-500">
             {imports.map(item => (
-              <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <tr key={item.id} className="hover:bg-slate-50 dark:bg-slate-200 dark:hover:bg-green-200/50">
                 <td className="p-4 font-medium">#{item.id}</td>
                 <td className="p-4">{item.supplierResponse.name}</td>
-                <td className="p-4 text-slate-500">
+                <td className="p-4 text-slate-800">
                   {item.createdAt ? (
                     <div>
                       <div>{new Date(item.createdAt).toLocaleString("vi-VN")}</div>
                     </div>
                   ) : "-"}
                 </td>
-                <td className="p-4 text-slate-500">
+                <td className="p-4 text-slate-800">
                   {item.updatedAt ? (
                     <div>
                       <div>{new Date(item.updatedAt).toLocaleString("vi-VN")}</div>

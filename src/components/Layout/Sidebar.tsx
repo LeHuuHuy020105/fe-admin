@@ -75,11 +75,6 @@ const menuItems = [
     label: "Order",
   },
   {
-    id: "/messages",
-    icon: MessageSquare,
-    label: "Messages",
-  },
-  {
     id: "/settings",
     icon: Settings,
     label: "Settings",
