@@ -26,10 +26,11 @@ export default function StatsGrid({ activeUsers, orders, revenue }: StatsGridPro
         </div>
     );
   }
+  console.log("revenue ", revenue)
   const stats = [
     {
       title: "Total Revenue",
-      value: `$${(revenue.current || 0).toLocaleString()}`,
+      value: `$${(revenue.current.profit || 0).toLocaleString()}`,
       change: revenue.percentChange,
       trend: revenue.percentChange >= 0 ? "up" : "down",
       icon: DollarSign,
