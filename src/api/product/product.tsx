@@ -242,6 +242,16 @@ export const addProductVariants = async (
   }
 };
 
+export const getAllProductVariant = async (params: any) => {
+  try {
+    // Gọi API lấy danh sách sản phẩm admin để có đầy đủ variant
+    const response = await axiosInstance.get("/product/admin/list", { params });
+    return { success: true, data: response.data.data };
+  } catch (error: any) {
+    return { success: false, error: error.response?.data?.message || error.message };
+  }
+};
+
 export const restoreProduct = async (
   productId: number | string,
 ) => {

@@ -14,10 +14,17 @@ interface RevenueChartProps {
     revenue: number[];
     cost: number[];
     profit: number[];
-  };
+  }| null | any;
 }
 export default function RevenueChart({ revenue }: RevenueChartProps) {
   console.log("Revenue " , revenue)
+  if (!revenue || Array.isArray(revenue) && revenue.length === 0) {
+      return (
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-b-2xl border border-slate-200/50 dark:border-slate-700/50 p-6 h-96 flex items-center justify-center">
+            <p className="text-slate-500">Đang tải dữ liệu biểu đồ...</p>
+        </div>
+      );
+  }
   const months = [
     "Jan",
     "Feb",
