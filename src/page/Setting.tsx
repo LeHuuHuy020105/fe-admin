@@ -176,9 +176,7 @@ export default function Setting() {
       if (editingAddressId) {
         // Update existing address
         result = await updateAddress(editingAddressId, payload);
-        if (result.success && formData.defaultAddress) {
-          await setDefaultAddress(editingAddressId);
-        }
+    
       } else {
         // Add new address
         result = await addAddress(payload);
