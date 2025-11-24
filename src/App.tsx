@@ -16,6 +16,7 @@ import RolePermission from "./page/RolePermission";
 import Customer from "./page/Customer";
 import Category from "./page/Category";
 import Setting from "./page/Setting";
+import ImportProductPage from "./page/ImportProduct";
 
 export default function App() {
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
@@ -86,6 +87,17 @@ export default function App() {
             <ProtectedRoute isAuthenticated={isAuthenticated}>
               <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
                 <Supplier />
+              </DashboardWrapper>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/import_product"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardWrapper collapsed={sideBarCollapsed} setCollapsed={setSideBarCollapsed}>
+                <ImportProductPage />
               </DashboardWrapper>
             </ProtectedRoute>
           }

@@ -58,9 +58,9 @@ const menuItems = [
     label: "Supplier",
   },
   {
-    id: "/inventory",
+    id: "/import_product",
     icon: Package,
-    label: "Inventory",
+    label: "Import Products",
   },
   {
     id: "/order",

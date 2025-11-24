@@ -15,11 +15,21 @@ interface StatsGridProps {
 }
 
 export default function StatsGrid({ activeUsers, orders, revenue }: StatsGridProps) {
-  console.log("rensdasda ", revenue)
+  console.log("rensdasda ", revenue);
+  if (!activeUsers || !orders || !revenue) {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+             {/* Loading skeleton đơn giản */}
+            {[1, 2, 3].map((i) => (
+                <div key={i} className="h-32 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse"></div>
+            ))}
+        </div>
+    );
+  }
   const stats = [
     {
       title: "Total Revenue",
-      value: `$${revenue.current.profit.toLocaleString()}`,
+      value: `$${(revenue.current || 0).toLocaleString()}`,
       change: revenue.percentChange,
       trend: revenue.percentChange >= 0 ? "up" : "down",
       icon: DollarSign,
