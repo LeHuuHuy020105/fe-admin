@@ -118,12 +118,13 @@ export default function Setting() {
 
   const handleEditAddress = (address: Address) => {
     setEditingAddressId(address.id);
+    console.log("Adresss " , address)
     setEditingAddress({
       customerName: address.customerName,
       phoneNumber: address.phoneNumber,
-      provinceId: null,
-      districtId: null,
-      wardCode: null,
+      provinceId: address.provinceId,
+      districtId: address.districtId,
+      wardCode: address.wardId,
       streetAddress: address.streetAddress,
       addressType: address.addressType as "HOME" | "WORK" | "OTHER",
       defaultAddress: address.defaultAddress,

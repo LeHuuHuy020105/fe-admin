@@ -35,12 +35,20 @@ export default function Address({ isOpen, onClose, onSave, initialData, isLoadin
     }
   );
 
+  console.log("form : ", initialData);
+
+  const parseAddress = (address) =>{
+    const parts = address.split(',').map(part => part.trim());
+    return parts[0];
+  }
   // Prefill form when initialData changes (e.g. when opening modal)
   useEffect(() => {
     if (initialData) {
+         const numberAddress =initialData.streetAddress? parseAddress(initialData.streetAddress) : null;
       setFormData((prev) => ({
         ...prev,
         ...initialData,
+        streetAddress: numberAddress ? numberAddress : null,
         provinceId: initialData.provinceId ?? initialData.provinceId ?? null,
         districtId: initialData.districtId ?? initialData.districtId ?? null,
         wardCode: initialData.wardCode ?? initialData.wardCode ?? null,
@@ -57,7 +65,12 @@ export default function Address({ isOpen, onClose, onSave, initialData, isLoadin
   const [loadingWards, setLoadingWards] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+console.log("provinces : " , provinces);
+console.log("districts : ",districts);
+console.log("wards: " ,wards);
+console.log("loadingProvinces ", loadingProvinces);
+console.log("loadingDistricts" ,loadingDistricts);
+console.log("loadingWards",loadingWards);
   // Fetch provinces on component mount
   useEffect(() => {
     const fetchProvinces = async () => {
